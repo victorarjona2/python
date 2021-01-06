@@ -1,0 +1,25 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Mar 13 10:52:08 2020
+
+@author: victor
+"""
+# IMPORTS ------------------------------------------------------------------- #
+import numpy as np
+# IMPORTS ------------------------------------------------------------------- #
+
+class Organism:
+    # AN ORGANISM HAS SOME QUALITIES. IN THIS CASE, AN ORGANISM AT THIS POINT
+    # IS BLACKBOXED AS SOME RANDO LIVING THING. IT HAS THESE QUALITIES:
+    def __init__(self, radius, growth_rate, max_growth, metabolism_rate,
+                 max_velocity, overall_health_score):
+        # WHAT'S THE STARTING SIZE?
+        self.radius = radius
+        # HOW FAST DOES IT GROW?
+        self.growth_rate = growth_rate
+        # WHAT'S THE MAX SIZE OF THIS ORGANISM?
+        self.max_growth = max_growth
+        self.metabolism_rate = metabolism_rate
+        self.max_velocity = max_velocity
+        self.overall_health_score = overall_health_score
