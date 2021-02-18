@@ -107,7 +107,7 @@ def NewtonMethod(x_start, y, f, Jf, eps):
      |        +----------------------> THE PREVIOUS INPUT VALUE
      |        |        +-------------> THE INVERSE JACOBIAN SQUARE MATRIX
      |        |        |     +-------> f EVALUATED AT THE PREVIOUS INPUT VALUE
-     |        |        |     |   +---> THE DESIRED OUPUT
+     |        |        |     |   +---> THE DESIRED OUTPUT
     _|__   ___|___   __|__  _|_ _|_
     '''
     nu_x = x_start - invJf@(fx - y)

@@ -92,7 +92,8 @@ for ii in range(5):
     axs[ii, 0].plot(x, y, 'r-')
     axs[ii, 0].arrow(0, 0, x1, y1, width=0.01)
     axs[ii, 0].arrow(0, 0, x2, y2, width=0.01)
-    axs[ii, 0].set_title('Unit circle & column vector in V for {}'.format(svd_meta['prob_letter']))
+    t = 'Unit circle & column vector in V for {}'.format(svd_meta['prob_letter'])
+    axs[ii, 0].set_title(t)
     axs[ii, 0].grid()
 
     s1, s2 = svd_meta['s'][0], svd_meta['s'][1]
