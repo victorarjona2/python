@@ -7,22 +7,6 @@ This is a temporary script file.
 
 import numpy as np
 
-#def QR_CGS(A):
-#    # To compare
-#    numpy_sol = np.linalg.qr(A)
-#    
-#    # Dimension of A
-#    m, n = A.shape
-#        
-#    # Q must be orthonormal and of dimension mxn
-#    # R must be an upper triangular matrix and of dimension nxn
-#    #   The first element 
-#    q1 = A[:, 0]/np.linalg.norm(A[:, 0])
-#    Q = np.array([[] for ii in range(m)])
-#    Q = np.append(Q, q1, axis=1)
-#    for ii in range(1, n):
-#        q2 = A[:, ii] - q1
-
 def QR_CGS(A):
     # Dimensions of A; because it's always nice to know, just in case
     m, n = A.shape
