@@ -51,7 +51,7 @@ def QR_CGS(A):
     # Return Q, R
     return Q, R
 
-def TestMatrixWithQR(A):
+def TestMatrix(A):
     m, n = A.shape
     if m < n:
         print('We have more columns than rows! Exiting')
