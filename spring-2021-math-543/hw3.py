@@ -22,8 +22,10 @@ def QR_CGS(A):
     # Construct first element of R and Q
     #   v0 is the first column vector of A, but it' s returned as an array, so we reshape it as an mx1 array
     v0 = A[:, 0].reshape((m, 1))
+
     #   R[0, 0] is equal to the norm of v0
     R[0, 0] = np.linalg.norm(v0)
+
     #   The first column vector of Q is the normalized first column vector of A
     Q = np.append(Q, v0/R[0, 0], axis=1)
 
@@ -41,10 +43,13 @@ def QR_CGS(A):
         for ii in range(jj):
             # Construct R[ii, jj]
             R[ii, jj] = np.dot(Q[:, ii].T, aj)
+
             # Update vj by subtracting R[ii, jj]*Q[:, ii]
             vj = vj - R[ii, jj]*Q[:, ii].reshape((m, 1))
+
         # Construct the norm of vj and store it in R[jj, jj]
         R[jj, jj] = np.linalg.norm(vj)
+
         # Append the new vj
         Q = np.append(Q, vj/R[jj, jj], axis=1)
 
@@ -103,7 +108,7 @@ D = np.matrix([[1, 2, 0],
                [0, 1, 1],
                [1, 3, 1]])
 
-TestMatrixWithQR(A)
-TestMatrixWithQR(B)
-TestMatrixWithQR(C)
-TestMatrixWithQR(D)
+TestMatrix(A)
+TestMatrix(B)
+TestMatrix(C)
+TestMatrix(D)
