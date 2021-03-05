@@ -1,6 +1,26 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Classical Gram-Schmidt
+def QR_CGS(A):
+    m, n = A.shape
+    Q = np.array([[] for ii in range(m)])
+    R = np.zeros((n, n))
+    v0 = A[:, 0].reshape((m, 1))
+    R[0, 0] = np.linalg.norm(v0)
+    Q = np.append(Q, v0 / R[0, 0], axis=1)
+    for jj in range(1, n):
+        vj = A[:, jj].reshape((m, 1))
+        aj = vj.copy()
+        for ii in range(jj):
+            R[ii, jj] = np.dot(Q[:, ii].T, aj)
+            vj = vj - R[ii, jj] * Q[:, ii].reshape((m, 1))
+
+        R[jj, jj] = np.linalg.norm(vj)
+        Q = np.append(Q, vj / R[jj, jj], axis=1)
+    return Q, R
+
+# Modified Gram-Schmidt
 def QR_MGS(A):
     m, n = A.shape
     V = np.matrix.copy(A)
@@ -23,13 +43,16 @@ for ii in range(1, 4):
     A[:, ii] = x**ii
 
 Q, R = QR_MGS(A)
+scale = Q[256, :]
+
+nQ = np.dot(Q, np.diag(1/scale))
 
 lgnd = ["$x^{}$".format(ii) for ii in range(4)]
 fig = plt.figure(figsize=(11, 7))
 ax = plt.gca()
 
 for ii in range(4):
-    ax.plot(Q[:, ii], label=lgnd[ii])
+    ax.plot(nQ[:, ii], label=lgnd[ii])
 
 ax.grid()
 ax.legend()
