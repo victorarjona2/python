@@ -28,7 +28,7 @@ def QR_MGS(A):
     R = np.zeros((n, n))
 
     for ii in range(n):
-        R[ii ,ii] = np.linalg.norm(V[:, ii])
+        R[ii, ii] = np.linalg.norm(V[:, ii])
         Q[:, ii] = V[:, ii] / R[ii, ii]
         for jj in range(ii + 1, n):
             R[ii, jj] = np.dot(Q[:, ii].T, V[:, jj])
