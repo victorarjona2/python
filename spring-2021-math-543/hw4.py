@@ -20,27 +20,6 @@ def QR_CGS(A):
         Q = np.append(Q, vj / R[jj, jj], axis=1)
     return Q, R
 
-# Classical Gram-Schmidt
-#   Copied from http://mlwiki.org/index.php/Gram-Schmidt_Process#Python
-# def QR_CGS(A):
-#     m, n = A.shape
-#     Q = np.zeros((m, n))
-#     R = np.zeros((n, n))
-#
-#     for jj in range(n):
-#         v = A[:, jj]
-#
-#         for ii in range(jj - 1):
-#             q = Q[:, ii]
-#             R[ii ,jj] = q.dot(v)
-#             v -= R[ii, jj]*q
-#         Q[:, ii] = V[:, ii] / R[ii, ii]
-#         for jj in range(ii + 1, n):
-#             R[ii, jj] = np.dot(Q[:, ii].T, V[:, jj])
-#             V[:, jj] -= R[ii, jj]*Q[:, ii]
-#
-#     return Q, R
-
 # Modified Gram-Schmidt
 def QR_MGS(A):
     m, n = A.shape
