@@ -2,7 +2,7 @@
 import numpy as np
 from numpy import linalg as la
 
-DEBUG = FALSE
+DEBUG = True
 
 for n in range(3, 8):
     m = 2**n
@@ -15,8 +15,11 @@ for n in range(3, 8):
         eigs_tmp = la.eigvals(A)
         rho = np.append(rho, max(abs(eigs_tmp)))
         lam = np.append(lam, eigs_tmp)
-        norms = np.append(la.norm(A, 2))
+        # In the solution it's like this
+        #norms = np.append(la.norm(A, 2))
+        norms = np.append(norms, la.norm(A, 2))
 
     if DEBUG == True:
-        print("Size of 100 Matrixes: {}x{}\n".format(m),
-              "Size of rho: {}\n".format(rho.size)))
+        print("Size of 100 Matrixes: {}x{}\n".format(m, m),
+              "Size of rho: {}\n".format(rho.size),
+              "Size of lam: {}\n".format(lam.size))
