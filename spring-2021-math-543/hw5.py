@@ -1,4 +1,4 @@
-# Code provided by Stevie Dickerson, modified by Victor Arjona
+# This code is a product of collaboration with Stevie Dickerson
 import numpy as np
 from numpy import linalg as la
 import matplotlib.pyplot as plt
