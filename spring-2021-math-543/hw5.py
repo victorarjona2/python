@@ -70,3 +70,36 @@ axs[0].set(xlabel='Values of m', ylabel='Mean Spectral Radius')
 axs[1].semilogx(m_vals, mean_norms)
 axs[1].grid()
 axs[1].set(xlabel='Values of m', ylabel='Mean Norms')
+plt.show()
+
+# PART C
+min_sing = np.array([])
+datas = np.array([])
+bounds = np.array([])
+ns = []
+jj = 1
+
+for nn in range(3, 7):
+    mm = 2 ** nn    # Compute m=2^n to get m=8,16,32,64,...
+    for ii in range(1000):
+        A = np.random.normal(loc=0,                 # Mean
+                             scale=1 / np.sqrt(m),  # Std Deviation
+                             size=(mm, mm))         # Dimension of matrix
+        U, S, V = np.linalg.svd(A)
+        min_sing = np.append(min_sing, np.min(S))
+    data = np.array([])
+    bound = np.array([])
+    for jj in range(2, 13):
+        bound = np.append(bound, 2**(-jj))
+        min_sing_filter = min_sing <= 2**(-jj)
+        min_sing_less_than_2_neg_jj = min_sing[min_sing_filter]
+        data = np.append(data, min_sing_less_than_2_neg_jj/min_sing.size)
+    bounds = np.append(bounds, bound.reshape((len(bound), 1)), axis=1)
+    datas = np.append(datas, data.reshape((len(bound), 1)), axis=1)
+
+fig, axs = plt.subplots(1, 1, figsize=(5, 5))
+fig.tight_layout()
+plt.gca()
+plt.plot(bounds, datas)
+plt.grid()
+plt.show()
