@@ -11,6 +11,7 @@ from numpy import linalg as la
 from urllib.request import urlretrieve
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 # Problem 2f
 # Generate CSV to turn to Pandas DataFrame
@@ -27,18 +28,40 @@ lon = "Long"
 #   Read CSV.
 df = pd.read_csv('covid.csv')
 
-#   Isolate row for US and drop all collumns except for the dates.
-#   "Unitize" everything.
+#   Isolate row for US and drop all columns except for the dates.
 #   Tranpose it. This turns the dates into the index!
 df_us1 = df.loc[df[c_r] == "US", :].drop(columns=[c_r, p_s, lat, lon]).T
-df_us1_max = df_us1.max()
-df_us1 = df_us1/df_us1_max
+
+#   "Unitize" everything.
+df_us1 = df_us1/df_us1.max()
+
+#   Add dates as a column
+df_us1['date'] = df_us1.index
+
+#   Change column from 249 to 'qty'
+df_us1 = df_us1.rename(columns={249: "qty"})
+
+# Plot bar graph
+fig, ax = plt.subplots(figsize=(10, 4))
+plt.xlabel('Date')
+plt.ylabel('QTY of Cases')
+plt.title('COVID')
+ax.xaxis.set_major_locator(mdates.MonthLocator())
+fmt = mdates.DateFormatter('%b %Y')
+ax.xaxis.set_major_formatter(fmt)
+ax.bar(df_us1['date'], df_us1['qty'])
+plt.setp(ax.get_xticklabels(), rotation=30);
+
+# df_us1.plot(kind="bar", x="date", y='qty')
+# plt.tight_layout()
 
 # Generate a list of the
-t_vals = pd.to_datetime(df_us1.index)
+# t_vals = pd.to_datetime(df_us1.index)
+# t_vals = np.arange(len(df_us1))
 
-plt.plot(t_vals, df_us1)
-#plt.bar(t_vals, df_us1)
+# plt.plot(t_vals, df_us1)
+# plt.plot(t_vals, df_us1, kind=bar)
+# plt.tight_layout()
 
 
 #df_clean = df.drop(['Province/State', 'Lat', 'Long'], axis=1, inplace=True)
