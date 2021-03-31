@@ -24,36 +24,46 @@ p_s = "Province/State"
 lat = "Lat"
 lon = "Long"
 
-# Turn CSV to Pandas Dataframe and extract the row for US. Drop all other columns.
+# Turn CSV to Pandas Dataframe and extract the row for US. Drop all other columns. Clean DataFrame.
 #   Read CSV.
 df = pd.read_csv('covid.csv')
 
-#   Isolate row for US and drop all columns except for the dates.
-#   Tranpose it. This turns the dates into the index!
+#   Isolate row for US and drop all columns except for the dates. Tranpose it. This turns the dates
+#   into the index! We don't want that. Will be dealt with later.
 df_us1 = df.loc[df[c_r] == "US", :].drop(columns=[c_r, p_s, lat, lon]).T
-
-#   "Unitize" everything.
-df_us1 = df_us1/df_us1.max()
-
-#   Add dates as a column
-df_us1['date'] = df_us1.index
 
 #   Change column from 249 to 'qty'
 df_us1 = df_us1.rename(columns={249: "qty"})
 
-# Plot bar graph
+#   Make "unit" column.
+df_us1['unit_qty'] = df_us1["qty"]/df_us1["qty"].max()
+
+#   Add dates (which is the current index) as a column.
+df_us1["date"] = df_us1.index
+
+#   Make index go from 0 to length of DataFrame. Doing this creates a new column called "index"
+#   which is the same as the dates.
+df_us1 = df_us1.reset_index()
+
+#   Remove index column.
+df_us1 = df_us1.drop(columns=["index"])
+
+# Clean data!
+print(df_us1.head())
+
+# 2fi - Plot bar graph
 fig, ax = plt.subplots(figsize=(10, 4))
-plt.xlabel('Date')
-plt.ylabel('QTY of Cases')
-plt.title('COVID')
+plt.xlabel("Date")
+plt.ylabel("QTY of Cases")
+plt.title("Confirmed COVID cases since 22JAN2020 - Present")
 ax.xaxis.set_major_locator(mdates.MonthLocator())
-fmt = mdates.DateFormatter('%b %Y')
+fmt = mdates.DateFormatter("%b %Y")
 ax.xaxis.set_major_formatter(fmt)
-ax.bar(df_us1['date'], df_us1['qty'])
+ax.bar(df_us1["date"], df_us1["qty"], width=0.5, align="center")
 plt.setp(ax.get_xticklabels(), rotation=30);
+plt.tight_layout()
 
 # df_us1.plot(kind="bar", x="date", y='qty')
-# plt.tight_layout()
 
 # Generate a list of the
 # t_vals = pd.to_datetime(df_us1.index)
