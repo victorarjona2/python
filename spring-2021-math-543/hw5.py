@@ -77,10 +77,10 @@ min_sing = np.array([])
 datas = np.array([[] for ii in range(11)])
 bounds = np.array([[] for ii in range(11)])
 ns = []
-jj = 1
 
 for nn in range(3, 7):
     mm = 2 ** nn    # Compute m=2^n to get m=8,16,32,64,...
+    ns.append("Matrix size {}".format(mm))
     for ii in range(1000):
         A = np.random.normal(loc=0,                 # Mean
                              scale=1 / np.sqrt(mm),  # Std Deviation
@@ -100,6 +100,10 @@ for nn in range(3, 7):
 fig, axs = plt.subplots(1, 1, figsize=(5, 5))
 fig.tight_layout()
 plt.gca()
-plt.plot(bounds, datas, 'o')
+plt.plot(bounds, datas, 'o-')
 plt.grid()
+plt.title("The fraction of matrices with minimal singular values less than $t$")
+plt.xlabel("$t$")
+plt.ylabel("Fraction of matrices")
+plt.legend(ns)
 plt.show()
