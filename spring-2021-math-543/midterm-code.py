@@ -7,7 +7,6 @@
 """
 
 import numpy as np
-from numpy import linalg as la
 from urllib.request import urlretrieve
 import pandas as pd
 import matplotlib.pyplot as plt
