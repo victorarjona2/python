@@ -118,7 +118,7 @@ base = df_us_last_n_diff["date"][df_us_last_n_diff.index[-1]]
 prediction_dates = pd.DataFrame({"pred_dates": [base + datetime.timedelta(days=ii) for ii in range(t_days_until_all_over_val_rounded)]})
 prediction_dates = prediction_dates.set_index(pd.Index(np.arange(mid, mid + t_days_until_all_over_val_rounded)))
 
-area_under_curve = float(0.5*(t_days_until_all_over_val)*df_us_last_n_diff["diff_qty"].tail(1))
+area_under_curve = float(0.5*(t_days_until_all_over_val)*lin_reg_vals[0])
 area_under_curve = np.format_float_scientific(area_under_curve, precision=2)
 
 lbl = "Linear regression of future until assumed last day.\nNumber of additional days is about {}.\nTotal new cases predicted to be {}"
