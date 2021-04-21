@@ -1,0 +1,60 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Apr 18 20:55:48 2021
+
+@author: victor
+"""
+# IMPORTS ------------------------------------------------------------------- #
+import numpy as np
+import matplotlib.pyplot as plt
+# IMPORTS ------------------------------------------------------------------- #
+'''
+DESCRIPTION
+
+
+DESCRIPTION
+'''
+# 24.3
+#   Arrays to collect values
+l2_exp_tA = []
+exp_t_max_A = []
+        
+#   Array of values between 0 to 20
+t = np.linspace(0, 20)
+
+for ii in range(10):
+    # 10x10 matrix of normally distributed values minus 2 times the identity
+    # matrix.
+    A = np.random.normal(0, 1, (10, 10)) - 2*np.identity(10)
+    
+    lst_to_appnd_to_l2 = []
+    lst_to_appnd_to_exp = []
+    
+    for t_val in t:
+        # L-2 norm of exp(t*A) and exp(t*max(A))
+        lst_to_appnd_to_exp.append(np.exp(t_val*np.max(A)))
+        lst_to_appnd_to_l2.append(np.linalg.norm(np.exp(t_val*A)))
+    
+    l2_exp_tA.append(lst_to_appnd_to_l2)
+    exp_t_max_A.append(lst_to_appnd_to_exp)
+
+l2_exp_tA = np.array(l2_exp_tA)
+exp_t_max_A = np.array(exp_t_max_A)
+
+fig, axs = plt.subplots(1, 2, figsize=(11, 7))
+axs = axs.flatten()
+
+for ii in range(len(l2_exp_tA)):
+    axs[0].semilogy(t, l2_exp_tA[ii])
+    
+for ii in range(len(l2_exp_tA)):
+    axs[1].semilogy(t, exp_t_max_A[ii])
+
+axs[0].grid()
+axs[0].set(xlabel="Values of $t$", ylabel=r"$\|\|{e^{tA}}\|\|_{2}$")
+
+axs[1].grid()
+axs[1].set(xlabel="Values of $t$", ylabel=r"$e^{t\alpha(A)}$")
+
+fig.tight_layout()
