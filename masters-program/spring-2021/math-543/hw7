@@ -7,6 +7,7 @@ Created on Sun Apr 18 20:55:48 2021
 """
 # IMPORTS ------------------------------------------------------------------- #
 import numpy as np
+import matplotlib.pyplot as plt
 # IMPORTS ------------------------------------------------------------------- #
 '''
 DESCRIPTION
@@ -15,8 +16,9 @@ DESCRIPTION
 DESCRIPTION
 '''
 # Arrays to collect values
-l2_exp_tA = np.array([])
-
+l2_exp_tA = []
+exp_t_max_A = []
+        
 # Array of values between 0 to 20
 t = np.linspace(0, 20)
 
@@ -25,8 +27,18 @@ for ii in range(10):
     # matrix.
     A = np.random.normal(0, 1, (10, 10)) - 2*np.identity(10)
     
+    lst_to_appnd_to_l2 = []
+    lst_to_appnd_to_exp = []
+    
     for t_val in t:
-        
-        # L-2 norm of exp(t*A)
-        l2_exp_tA_val = np.linalg.norm(np.exp(t_val*A))
-        
+        # L-2 norm of exp(t*A) and exp(t*max(A))
+        lst_to_appnd_to_exp.append(np.exp(t_val*np.max(A)))
+        lst_to_appnd_to_l2.append(np.linalg.norm(np.exp(t_val*A)))
+    
+    l2_exp_tA.append(lst_to_appnd_to_l2)
+    exp_t_max_A.append(lst_to_appnd_to_exp)
+
+l2_exp_tA = np.array(l2_exp_tA)
+exp_t_max_A = np.array(exp_t_max_A)
+
+fig, axs = plt.subplots(
