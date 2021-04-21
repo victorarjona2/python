@@ -41,8 +41,9 @@ for ii in range(10):
 
 l2_exp_tA = np.array(l2_exp_tA)
 exp_t_max_A = np.array(exp_t_max_A)
+diff_l2_exp = [np.abs(l2_exp_tA[ii] - exp_t_max_A[ii]) for ii in range(len(l2_exp_tA))]
 
-fig, axs = plt.subplots(1, 2, figsize=(11, 7))
+fig, axs = plt.subplots(1, 3, figsize=(11, 5))
 axs = axs.flatten()
 
 for ii in range(len(l2_exp_tA)):
@@ -51,10 +52,16 @@ for ii in range(len(l2_exp_tA)):
 for ii in range(len(l2_exp_tA)):
     axs[1].semilogy(t, exp_t_max_A[ii])
 
+for ii in range(len(diff_l2_exp)):
+    axs[2].semilogy(t, diff_l2_exp[ii])
+    
 axs[0].grid()
 axs[0].set(xlabel="Values of $t$", ylabel=r"$\|\|{e^{tA}}\|\|_{2}$")
 
 axs[1].grid()
 axs[1].set(xlabel="Values of $t$", ylabel=r"$e^{t\alpha(A)}$")
+
+axs[2].grid()
+axs[2].set(xlabel="Values of $t$", ylabel=r"Difference between plots")
 
 fig.tight_layout()
