@@ -41,4 +41,9 @@ for ii in range(10):
 l2_exp_tA = np.array(l2_exp_tA)
 exp_t_max_A = np.array(exp_t_max_A)
 
-fig, axs = plt.subplots(
+fig, axs = plt.subplots(1, 2, figsize=(7, 5))
+fig.tight_layout()
+axs = axs.flatten()
+
+for ii in range(len(l2_exp_tA)):
+    axs[0].semilogy(t, l2_exp_tA[ii])
