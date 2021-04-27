@@ -68,6 +68,7 @@ fig.tight_layout()
 
 
 # Implement and test Householder Reduction to Hessenberg form.
+np.set_printoptions(precision=5)
 def Householder2Hessenberg(B):
     # Get shape of Matrix and make sure it is square.
     shape = B.shape
@@ -80,18 +81,24 @@ def Householder2Hessenberg(B):
 
     A = np.copy(B)
     for kk in range(m - 1):
-        x = A[kk+1:m, kk]
+        x = A[kk + 1:m, kk]
 
         e_1 = np.zeros(shape=x.shape)
         e_1[0] = 1
 
         v_k = np.sign(x[0])*np.linalg.norm(x)*e_1 + x
         v_k /= np.linalg.norm(v_k)
+        v_k = v_k.reshape((len(v_k), 1))
+        v_k_T = v_k.reshape((1, len(v_k)))
 
-        # Fix this section of code        
-        A[kk + 1:m, kk:m] -= 2*np.matmul(v_k.reshape(len(v_k), 1), np.matmul(v_k.reshape(1, len(v_k)), A[kk + 1:m, kk:m]))
-        A[0:m, kk + 1:m] -= 2*np.matmul(np.matmul(A[0:m, kk + 1:m], v_k).reshape(len(v_k), 1), v_k.reshape(1, len(v_k)))
+        # Fix this section of code
+        print(A)
 
+        A[kk + 1:m, kk:m] -= 2*np.matmul(v_k, np.matmul(v_k_T, A[kk + 1:m, kk:m]))
+        print(A)
+
+        A[0:m, kk + 1:m] -= 2*np.matmul(np.matmul(A[0:m, kk + 1:m], v_k), v_k_T)
+        print(A)
     return A
 
 # Implemente the Rayleigh quotient.
