@@ -7,6 +7,7 @@ Created on Sun Apr 18 20:55:48 2021
 """
 # IMPORTS ------------------------------------------------------------------- #
 import numpy as np
+import scipy.linalg
 import matplotlib.pyplot as plt
 # IMPORTS ------------------------------------------------------------------- #
 '''
@@ -67,9 +68,12 @@ axs[2].set(xlabel="Values of $t$", ylabel=r"Difference between plots")
 fig.tight_layout()
 
 
-# Implement and test Householder Reduction to Hessenberg form.
-np.set_printoptions(precision=5)
+# Implement and test Householder Reduction to Hessenberg form. Since I'm not
+# using MATLAB I'll instead be using SciPy's Hessenberg function:
+#   scipy.linalg.hessenberg
 def Householder2Hessenberg(B):
+    np.set_printoptions(precision=3)
+    
     # Get shape of Matrix and make sure it is square.
     shape = B.shape
     dim = B.ndim
@@ -91,15 +95,20 @@ def Householder2Hessenberg(B):
         v_k = v_k.reshape((len(v_k), 1))
         v_k_T = v_k.reshape((1, len(v_k)))
 
-        # Fix this section of code
-        print(A)
-
         A[kk + 1:m, kk:m] -= 2*np.matmul(v_k, np.matmul(v_k_T, A[kk + 1:m, kk:m]))
-        print(A)
-
         A[0:m, kk + 1:m] -= 2*np.matmul(np.matmul(A[0:m, kk + 1:m], v_k), v_k_T)
-        print(A)
     return A
+
+
+A = 1.0*np.array([[2, 5, 8, 7],
+                  [5, 2, 2, 8],
+                  [7, 5, 6, 6],
+                  [5, 4, 4, 8]])
+
+scipy_H = scipy.linalg.hessenberg(A)
+simple_H = Householder2Hessenberg(A)
+print("Scipy's H2H\n", scipy_H)
+print("Custom H2H\n", simple_H)
 
 # Implemente the Rayleigh quotient.
 #def RayleighQ(x):
