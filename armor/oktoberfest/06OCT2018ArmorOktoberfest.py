@@ -145,8 +145,10 @@ print()
 
 fig = plt.figure()
 plt.hist(sales_by_type_values,
-         bins=20, histtype='barstacked',
-         range=(14, 24), label=sales_by_type_keys)
+         bins=20,
+         histtype='barstacked',
+         range=(14, 24),
+         label=sales_by_type_keys)
 plt.title('Frecuencia de ventas por intervalos de 30min')
 plt.ylabel('Frecuencia de venta por estilo')
 plt.xlabel('Hora')
