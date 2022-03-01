@@ -140,9 +140,10 @@ def ReimannApprox(f, x_lo, x_hi, tol=4, int_type='ms', plot=False):
         (plot=True), a graph of the approximation using 0 rectangles up to
         the number of rectangles needed to reach the tolerance is generated.
         
-        In the end we get the approximation of the integral (int_approx).
+        In the end we get a list of the approximations of the integral
+        (int_approx).
         
-        Variables:
+        Input variables:
             Required: 
                 f:          The function used to calculate the integral, AKA, 
                             the integrand. It is assumed that the function is
@@ -151,24 +152,25 @@ def ReimannApprox(f, x_lo, x_hi, tol=4, int_type='ms', plot=False):
                 x_hi:       Upper limit.
             
             Optional:
-                tol:        Tolerance. Up to how many decimal points should
-                            this approximation get to? E.G., if tol=3 then the
-                            tolerance is 10**(-3) (three decimal points).
-                int_type:   
-            
+                tol:        Tolerance defaults to 4 decimal points. Up to how
+                            many decimal points should this approximation get
+                            to? E.G., if tol=3 then the tolerance is 10**(-3)
+                            (three decimal points).
+                int_type:   By default, the trapezoid rule ("ts") is used.
+                            Other options are right side ("rs"), left ("ls"),
+                            and middle ("mid").
+                plot:       Boolean. If true, a plot of the approximation is
+                            generated.
+        
+        Output variables:
+            int_approx:     List composed of the approximations. The last
+                            element in the list is the approximation up to the
+                            tolerance chosen.
     '''
-    # APPROXIMATIONS CONTAINER. THE FIRST ELEMENT IS ONE SQUARE... THE
-    # SECOND IS TWO... IN OTHER WORDS:
-    # INDEX         NO. RECT
-    # 0             1
-    # 1             2
-    # .             .
-    # .             .
-    # .             .
-    # N             N + 1
     int_approx = []
-    # GENERATE FIRST TWO APPROXIMATIONS TO HAVE SOMETHING TO COMPARE TO
-    print('GENERATING FIRST TWO APPROXIMATIONS NOW:\n\n')
+    # Generate first two approximations, otherwise, we have nothing to compare
+    # and, therefore, nothing to compare with our tolerance.
+    print("Generating first two approximations...\n")
     for ii in range(2):
         dx = (x_hi - x_lo)/float((ii + 1))
         fx = f(XInputs(x_lo, x_hi, ii + 1, int_type))
