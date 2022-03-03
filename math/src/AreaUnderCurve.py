@@ -84,31 +84,45 @@ def ReimannApprox(f, x_lo, x_hi, tol=4, int_type='ms', plot=False):
                             element in the list is the approximation up to the
                             tolerance chosen.
     '''
-    int_approx = []
-    # Generate first two approximations, otherwise, we have nothing to compare
+    # Approximation list. With 0 areas to add, we start out with an area of 0.
+    int_approx = [0]
+    
+    # Initiate tolerance value.
+    tol_val = 10**(-1*tol)
+    
+    # Generate next two approximations, otherwise, we have nothing to compare
     # and, therefore, nothing to compare with our tolerance.
-    print("Generating first two approximations...\n")
-    for ii in range(2):
-        dx = (x_hi - x_lo)/float((ii + 1))
-        fx = f(XInputs(x_lo, x_hi, ii + 1, int_type))
+    print("Generating the second and third approximations...\n")
+    for ii in range(1, 3):
+        dx = (x_hi - x_lo)/float(ii)
+        x_vals = XInputs(x_lo, x_hi, ii, int_type)
+        fx = f(x_vals)
         approx = GetArea(dx, fx, int_type)
         print(str(ii + 1) + " ---> " + str(approx) + '\n')
         int_approx.append(approx)
-    # GENERATE THE Nth APPROXIMATION
+    
+    # Generate the nth approximation; that is, make as many approximations
+    # as necessary until tolerance is met.
     no_rects = 3
-    print('GENERATING THE REST OF THE APPROXIMATIONS NOW:\n\n')
-    while (np.abs((int_approx[-1] - int_approx[-2])) > 10**(-1*tol):
+    print("Generating the rest of the approximations...\n")
+    diff_bet_approxs = np.abs((int_approx[-1] - int_approx[-2]))
+    while diff_bet_approxs > tol_val:
         dx = (x_hi - x_lo)/float((no_rects))
-        fx = f(XInputs(x_lo, x_hi, no_rects, int_type))
+        x_vals = XInputs(x_lo, x_hi, no_rects, int_type)
+        fx = f(x_vals)
         approx = GetArea(dx, fx, int_type)
         print(str(no_rects) + " ---> " + str(approx) + '\n')
         int_approx.append(approx)
-        no_rects += 1
-    no_rects -= 1
-    # PLOT
+        
+        # Increase number of rectangles and update difference between
+        # approximations.
+        diff_bet_approxs = np.abs((int_approx[-1] - int_approx[-2]))
+        if diff_bet_approxs > tol_val:
+            no_rects += 1
+        
+    # If plot boolean is true, then plot
     if plot:
-        plt.plot(np.asarray([ii for ii in range(1, len(int_approx) + 1)]),
-                 int_approx)
+        plt.plot(np.asarray(range(len(int_approx))), int_approx)
         plt.grid(1)
+
     return int_approx
-# CONTENT ------------------------------------------------------------------- #
