@@ -5,7 +5,6 @@ Created on Sun Feb 27 22:36:19 2022
 
 @author: victorarjona
 """
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -27,6 +26,16 @@ def XInputs(x_lo, x_hi, no_rect, int_type='ms'):
         return x_inp
 
 def GetArea(dx, fx, int_type='ms'):
+    '''
+    Description
+        GetArea returns the area of the base (dx) and height (fx) provided. If
+        "dx" and "fx" are given as lists, then they're multiplied element by
+        element. The function is modified by specifying the type of integral
+        (int_type).
+    Input variables:
+        
+        dx
+    '''
     if int_type == 'ts':
         area = []
         for ii in range(len(fx) - 1):
@@ -110,9 +119,8 @@ def ReimannApprox(f, x_lo, x_hi, tol=4, int_type='ms', plot=False):
         dx = (x_hi - x_lo)/float((no_rects))
         x_vals = XInputs(x_lo, x_hi, no_rects, int_type)
         fx = f(x_vals)
-        approx = GetArea(dx, fx, int_type)
-        print(str(no_rects) + " ---> " + str(approx) + '\n')
-        int_approx.append(approx)
+        int_approx.append(GetArea(dx, fx, int_type))
+        print(str(no_rects) + " ---> " + str(int_approx[-1]) + '\n')
         
         # Increase number of rectangles and update difference between
         # approximations.
