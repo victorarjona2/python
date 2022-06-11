@@ -50,8 +50,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # READ CSV FILE WITH PANDAS. HEADERS WILL BE AUTOMATICALLY CONSIDERED.
-file = 'Candidate-File.csv'
-data = pd.read_csv(file)
+file_path = r"C:\Users\vargo\codebase\python\data\fake-data.csv"
+data = pd.read_csv(file_path)
 
 # CLEAN DATA: ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #       1) RENAME HEADERS. ----------------------------------------------------
@@ -158,7 +158,7 @@ plt.legend(lbl)
 plt.title("Frequency of applications in the month")
 plt.xlabel("Day of the month (December)")
 plt.ylabel("Frequency")
-fig.savefig('Frequency of Applications.png')
+#fig.savefig('Frequency of Applications.png')
 
 #       1.4 WHAT TIME SPAN ARE WE IN HERE!? -----------------------------------
 max_date = max(data.date)
@@ -211,7 +211,7 @@ plt.title('Frequency per Amount')
 plt.xlabel('Amount requested')
 plt.ylabel('Frequency')
 plt.show()
-fig.savefig('Frequency per Amount.png')
+#fig.savefig('Frequency per Amount.png')
 print()
 # -----------------------------------------------------------------------------
 #       1.6 WHAT'S THE COUNT FOR ONLINE/STORE CHANNELS? PERCENTAGE? -----------
@@ -243,7 +243,7 @@ plt.title('Frequency per Channel')
 plt.xlabel('Channel')
 plt.ylabel('Frequency')
 plt.show()
-fig.savefig('Frequency per Channel.png')
+#fig.savefig('Frequency per Channel.png')
 print()
 # -----------------------------------------------------------------------------
 #       1.7 HOW MUCH REVENUE DID WE GET? --------------------------------------
@@ -286,7 +286,7 @@ plt.title('Frequency per Decision Code')
 plt.xlabel('Decision Code')
 plt.ylabel('Frequency')
 plt.show()
-fig.savefig('Frequency per Decision Code.png')
+#fig.savefig('Frequency per Decision Code.png')
 print()
 # -----------------------------------------------------------------------------
 #       1.10 WHAT'RE THE COUNTS FOR EACH DECISION? PERCENTAGE? -------------
@@ -318,7 +318,7 @@ plt.title('Frequency per Decision')
 plt.xlabel('Decision')
 plt.ylabel('Frequency')
 plt.show()
-fig.savefig('Frequency per Decision.png')
+#fig.savefig('Frequency per Decision.png')
 print()
 #   1 GENERAL INFORMATION +++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -344,7 +344,7 @@ print(ans2_1_onl.format(len_onl_pop,
                         100*round(1.0*onl_str_dict["Online"]/len(data), 2)
                         ), "\n")
 
-ans2_1_str = "The total amount of online applications is {}. That's {}% total."
+ans2_1_str = "The total amount of store applications is {}. That's {}% total."
 print(ans2_1_str.format(len_str_pop,
                         100*round(1.0*onl_str_dict["Store"]/len(data), 2)
                         ), "\n")
