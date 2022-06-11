@@ -10,10 +10,20 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class Roots():
-    def __init__(self, fx, df_dx = None):
-        self.fx = fx
-        self.df_dx = df_dx
-        
+    """
+    The Roots class is a tool that provides a way to handle mathematical
+    functions (preferably continuous) to find out what input value will
+    provide the desired output.
+    
+    Initialization variables:
+        fz      -   An function whos input is n-dimensional and output is
+                    m-dimensional
+        df_dz   - 
+    """
+    def __init__(self, fz, df_dz = None):
+        self.fz = fz
+        self.df_dz = df_dz
+
     def NewtonMethod(x_start, y, f, Jf, eps):
         '''          _______  _  _  __  ___
                         |     |  |   |   +------> TODO: FILL IN DESCRIPTION
