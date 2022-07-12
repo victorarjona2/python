@@ -16,50 +16,42 @@ class Roots():
     provide the desired output.
     
     Initialization variables:
-        fz      -   An function whos input is n-dimensional and output is
-                    m-dimensional
-        df_dz   - 
+        f       -   An function whos input is n-dimensional and output is
+                        m-dimensional.
+        Jf      -   Essentially, the Jacobian of the function, "f"; basically,
+                        the derivative with respect to "z". Read more here:
+                        https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant
     """
-    def __init__(self, fz, df_dz = None):
-        self.fz = fz
-        self.df_dz = df_dz
-
-    def NewtonMethod(x_start, y, f, Jf, eps):
-        '''          _______  _  _  __  ___
-                        |     |  |   |   +------> TODO: FILL IN DESCRIPTION
-                        |     |  |   +----------> THE JACOBIAN OF f
-                        |     |  +--------------> f:X->Y
-                        |     +-----------------> THE VALUE OF Y WE WANT TO APPROX
-                        +-----------------------> OUR FIRST APPROXIMATION/GUESS
+    def __init__(self):
+        pass
+    
+    def Define_Function(self, f):
+        self.f = f
+    
+    def Define_Jacobian_Function(self, Jf):
+        self.Jf = Jf
+        
+    def NewtonMethod(self, x_start, des_y, eps, debug=True):
         '''
-    #   BANTER
-        print("Newton Method starts NOW!")
-    #   START COLLECTING YOUR INPUT VALUES...
+        '''
+        if debug:
+            print("Newton Method starts NOW!\n")
+    
         x_vals = [x_start]
-    #   ... AND YOUR OUTPUT VALUES.
-        y_vals = []
-        fx = f(x_start)
-        y_vals.append(fx)
-    #   BANTER
-        print(str(x_start) + "\n")
-    #   USE YOUR PRE-DEFINED SQUARE JACOBIAN MATRIX TO GENERATE AN INVERSE MATRIX.
-        invJf = np.linalg.pinv(Jf(x_start))
-    #   GENERATRE THE NEW VALUE.
-        '''
-         +-------------------------------> THE NEW APPROXIMATION
-         |        +----------------------> THE PREVIOUS INPUT VALUE
-         |        |        +-------------> THE INVERSE JACOBIAN SQUARE MATRIX
-         |        |        |     +-------> f EVALUATED AT THE PREVIOUS INPUT VALUE
-         |        |        |     |   +---> THE DESIRED OUTPUT
-        _|__   ___|___   __|__  _|_ _|_
-        '''
-        nu_x = x_start - invJf@(fx - y)
-    #   EVALUATE f AT THE NEW INPUT VALUE...
-        fx = f(nu_x)
-    #   ... STORE THE NEW INPUT VALUE...
-        x_vals.append(nu_x)
-    #   ... AND DO THE SAME WITH THE NEW EVALUATION OF f.
-        y_vals.append(fx)
+        y_vals = [self.f(x_vals[-1])]
+        
+        Jf_x = self.Jf(x_vals[-1])
+        inv_Jf = np.linalg.pinv(Jf_x)
+        
+        if debug:
+            print("Zeroeth approximation:\n",
+                  f"\tx: {x_vals[-1]:.2f}, y: {y_vals[-1]:.2f}\n\n")
+            print("First iteration of Jacobian and its inverse:\n",
+                  f"\tJacobian: {Jf_x:.2f}, Inv Jacobian: {inv_Jf:.2f}")
+        
+        x_vals.append(x_vals[-1] - invJf@(y_vals[-1] - des_y))
+        y_vals.append(self.f(x_vals[-1]))
+        
     #   THIS IS WHERE ALL THE MAGIC HAPPENS. TODO: ADD COMMENTS.
         while np.linalg.norm(x_vals[-1] - x_vals[-2]) > eps:
             pre_x = x_vals[-1]
