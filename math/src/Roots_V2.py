@@ -31,7 +31,7 @@ class Roots():
     def Define_Jacobian_Function(self, Jf):
         self.Jf = Jf
         
-    def NewtonMethod(self, x_start, des_y, eps, debug=True):
+    def Newton_Method(self, x_start, des_y, eps, debug=True):
         '''
         '''
         if debug:
