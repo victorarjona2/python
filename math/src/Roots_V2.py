@@ -13,7 +13,8 @@ class Roots():
     """
     The Roots class is a tool that provides a way to handle mathematical
     functions (preferably continuous) to find out what input value will
-    provide the desired output.
+    provide the desired output... or at least makes an effort to get there
+    by using Newton's (Secant) Method!
     
     Initialization variables:
         f       -   An function whos input is n-dimensional and output is
