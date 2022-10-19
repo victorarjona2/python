@@ -13,8 +13,7 @@ class Roots():
     """
     The Roots class is a tool that provides a way to handle mathematical
     functions (preferably continuous) to find out what input value will
-    provide the desired output... or at least makes an effort to get there
-    by using Newton's (Secant) Method!
+    provide the desired output.
     
     Initialization variables:
         f       -   An function whos input is n-dimensional and output is
@@ -32,7 +31,7 @@ class Roots():
     def Define_Jacobian_Function(self, Jf):
         self.Jf = Jf
         
-    def Newton_Method(self, x_start, des_y, eps, debug=True):
+    def NewtonMethod(self, x_start, des_y, eps, debug=True):
         '''
         '''
         if debug:
