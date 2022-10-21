@@ -16,12 +16,13 @@ class Roots():
     functions (preferably continuous) to find out what input value will
     provide the desired output.
     
-    Initialization variables:
-        f       -   An function whos input is n-dimensional and output is
-                        m-dimensional.
-        Jf      -   Essentially, the Jacobian of the function, "f"; basically,
-                        the derivative with respect to "z". Read more here:
-                        https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant
+    TODO: This description requires some revisiting...
+    Explanation of variables:
+        f   - An function whos input is n-dimensional and output is
+                m-dimensional.
+        Jf  - Essentially, the Jacobian of the function, "f"; basically, the
+                derivative with respect to "z". Read more here:
+                    https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant
     
     Notes to users:
     For the time being, everything is defined manually until a proper way of
@@ -35,6 +36,12 @@ class Roots():
     """
 
     def __init__(self):
+        dict_init = {"x": [],
+                    "fx": [],
+                    "dx": [],
+                    "dfx":[],
+                    "Jf_x":[]}
+        self.iter_df = pd.DataFrame(dict_init)
         pass
     
     # Define the class instance's function.
@@ -93,33 +100,31 @@ class Roots():
     def Newton_Method(self, x_start, des_y, eps, debug=True):
         '''
         '''
-        self.x_start = x_start
         self.des_y = des_y
         self.eps = eps
         self.debug = debug
+        len_iter_df = len(self.iter_df.index)
+        self.iter_df.loc[len_iter_df] = [x_start,
+                                        self.Function(x_start),
+                                        np.NAN,
+                                        np.NAN,
+                                        np.NAN]
         
         if self.debug:
             print("Newton Method starts NOW!\n")
-        
-        # Define initial collection lists for...
-        #   x value so far
-        #   related y value list
-        #   current Jacobian
-        #   current inverse jacobian
-        # ... and make it available to the instance.
-        [x_vals, y_vals, Jf_x_vals, inv_Jf_x_vals] = self._Define_Lists()
-        self.x_vals = x_vals
-        self.x_vals = y_vals
-        self.Jf_x_vals = Jf_x_vals
-        self.inv_Jf_x_vals = inv_Jf_x_vals
 
-if __name__ == "__main__":
-    print("Starting demo!")
+def Demo_Funcs():
     def f(x):
         return x**2 + 7*x + 12
     
     def Jf(x):
         return 2*x + 7
+    
+    return [f, Jf]
+
+if __name__ == "__main__":
+    print("Starting demo!")
+    [f, Jf] = Demo_Funcs()
         
     rooty = Roots()
     rooty.Define_Function(f)
