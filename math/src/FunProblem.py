@@ -75,8 +75,7 @@ def Jf(v):
     y = complex(v[1])
     y_x = np.power(y, x**2 + 7*x + 12)
     y_x_minus = np.power(y, x**2 + 7*x + 11)
-    r1 = [(2*x + 7)*y_x*np.log(y),
-          (x**2 + 7*x + 12)*y_x_minus]
+    r1 = [(2*x + 7)*y_x*np.log(y), (x**2 + 7*x + 12)*y_x_minus]
     r2 = [1, 1]
     return np.array([r1, r2])
 # HELPER FUNCTIONS ---------------------------------------------------------- #

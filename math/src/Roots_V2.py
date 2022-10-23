@@ -63,31 +63,47 @@ class Roots():
     # Iteration function
     def _Iterate(self):
         len_iter_df = len(self.iter_df.index)
+        row_iter = []
         if self.debug:
-            print(f"Iteration number {len_iter_df}!")
+            print(f"\nIteration number {len_iter_df}!")
         if len_iter_df == 0:
-            row_start = np.asarray([self.x_start, self.Function(self.x_start),
-                                    np.NAN, np.NAN,
-                                    self.Jacobian_Function(self.x_start)],
-                                    dtype = object)
-            print(row_start)
-            self.iter_df.iloc[len_iter_df] = row_start
-        elif len_iter_df == 1:
+            nu_row = [self.x_start, self.Function(self.x_start), np.NAN,
+                      np.NAN, self.Jacobian_Function(self.x_start)]
+            
+        elif len_iter_df >= 1:
             # Prep variables for use.
-            pre_x = self.iter_df.iloc[len_iter_df]["x"]
-            pre_f_x = self.iter_df.iloc[len_iter_df]["x"]
-            pre_Jf_x = self.iter_df.iloc[len_iter_df]["Jf_x"]
-            pre_inv_Jf_x = np.linalg.pinv(pre_Jf_x)
+            pre_row = self.iter_df.iloc[-1]
+            pre_x = pre_row["x"]
+            pre_f_x = pre_row["f_x"]
+            pre_dx = pre_row["dx"]
+            pre_df_x = pre_row["df_x"]
+            pre_Jf_x = pre_row["Jf_x"]
+            try:
+                pre_inv_Jf_x = np.linalg.inv(pre_Jf_x)
+            except:
+                pre_inv_Jf_x = 1/pre_Jf_x
             
-            # Generate new value of x.
-            nu_x =  pre_x - pre_inv_Jf_x@(pre_x - self.des_y)
+            # Generate new values for new row.
+            try:
+                nu_x =  pre_x - pre_inv_Jf_x@(pre_f_x - self.des_y)
+            except:
+                nu_x =  pre_x - pre_inv_Jf_x*(pre_f_x - self.des_y)
+                
+            nu_f_x = self.Function(nu_x)
+            nu_Jf_x = self.Jacobian_Function(nu_x)
+            nu_dx = nu_x - pre_x
+            nu_df_x = nu_f_x - pre_f_x
             
-            # Generate new values  to store.
-            nu_f_x = self.Function(x)
+            # Make new row.
+            nu_row = [nu_x, nu_f_x, nu_dx, nu_df_x, nu_Jf_x]
+
+        nu_row = np.asarray(nu_row, dtype=object)
+        if self.debug:
+            print(nu_row)
+        self.iter_df.loc[len_iter_df] = nu_row
         
-    def Newton_Method(self, x_start = np.asarray([0]),
-                      des_y = np.asarray([0]), eps = np.finfo(float).eps,
-                      debug=True):
+    def Newton_Method(self, x_start = 0, des_y = 0, eps = np.finfo(float).eps,
+                      debug = False):
         '''
         '''
         self.x_start = x_start
@@ -98,7 +114,10 @@ class Roots():
         if self.debug:
             print("Newton Method starts NOW!", "Generating first row...",
                   sep = "\n")
-        for ii in range(1):
+        for ii in range(2):
+            self._Iterate()
+
+        while np.abs(self.iter_df.iloc[-1]["x"] - self.iter_df.iloc[-2]["x"]) > self.eps:
             self._Iterate()
         
         print(self.iter_df)
@@ -112,7 +131,7 @@ def Demo_Funcs():
         return x**2 + 7*x + 12
     
     def Jf(x):
-        return np.matrix([2*x + 7])
+        return 2*x + 7
     
     return [f, Jf]
 
@@ -123,4 +142,4 @@ if __name__ == "__main__":
     rooty = Roots()
     rooty.Define_Function(f)
     rooty.Define_Jacobian_Function(Jf)
-    rooty.Newton_Method()
+    rooty.Newton_Method(eps = 0.0000001, x_start = -999)
