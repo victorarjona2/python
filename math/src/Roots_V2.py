@@ -63,7 +63,6 @@ class Roots():
     # Iteration function
     def _Iterate(self):
         len_iter_df = len(self.iter_df.index)
-        row_iter = []
         if self.debug:
             print(f"\nIteration number {len_iter_df}!")
         if len_iter_df == 0:
@@ -75,8 +74,6 @@ class Roots():
             pre_row = self.iter_df.iloc[-1]
             pre_x = pre_row["x"]
             pre_f_x = pre_row["f_x"]
-            pre_dx = pre_row["dx"]
-            pre_df_x = pre_row["df_x"]
             pre_Jf_x = pre_row["Jf_x"]
             try:
                 pre_inv_Jf_x = np.linalg.inv(pre_Jf_x)
@@ -120,11 +117,8 @@ class Roots():
         while np.abs(self.iter_df.iloc[-1]["x"] - self.iter_df.iloc[-2]["x"]) > self.eps:
             self._Iterate()
         
-        print(self.iter_df)
-        
-        # row_start = np.asarray([x_start, self.Function(x_start), np.NAN, np.NAN,
-        #                         self.Jacobian_Function(x_start)])
-        # self.iter_df.loc[len_iter_df] = row_start
+        if self.debug:
+            print(self.iter_df)
         
 def Demo_Funcs():
     def f(x):
@@ -138,7 +132,7 @@ def Demo_Funcs():
 if __name__ == "__main__":
     print("Starting demo!")
     [f, Jf] = Demo_Funcs()
-        
+    
     rooty = Roots()
     rooty.Define_Function(f)
     rooty.Define_Jacobian_Function(Jf)
