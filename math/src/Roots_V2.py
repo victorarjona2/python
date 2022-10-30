@@ -28,11 +28,13 @@ class Roots():
     """
 
     def __init__(self):
-        dict_init = {"x": [],
-                    "f_x": [],
-                    "dx": [],
-                    "df_x":[],
-                    "Jf_x":[]}
+        """
+        """
+        dict_init = {"x": [],   # Approximations to x
+                    "f_x": [],  # Outpus of approximation to x
+                    "dx": [],   # Differential between approximations of x
+                    "df_x":[],  # Differential between approximations of f(x)
+                    "Jf_x":[]}  # Jacobian/Derivative (if available) of f(x)
         self.iter_df = pd.DataFrame(dict_init)
         pass
     
@@ -57,36 +59,43 @@ class Roots():
         len_iter_df = len(self.iter_df.index)
         if self.debug:
             print(f"\nIteration number {len_iter_df}!")
+        
+        # If this is the first iteration, then populate values for first row!
         if len_iter_df == 0:
-            nu_row = [self.x_start, self.Function(self.x_start), np.NAN,
-                      np.NAN, self.Jacobian_Function(self.x_start)]
-            
+            nu_row = [self.x_start,                         # First guess
+                      self.Function(self.x_start),          # First output
+                      np.NAN,                               # Change fox xs
+                      np.NAN,                               # Change for ys
+                      self.Jacobian_Function(self.x_start)] # Actual Jacobian
+        
+        # If this is the first or later iteration, then...
         elif len_iter_df >= 1:
-            # Prep variables for use.
+            # Prep variables for use...
             pre_row = self.iter_df.iloc[-1]
             pre_x = pre_row["x"]
             pre_f_x = pre_row["f_x"]
             pre_Jf_x = pre_row["Jf_x"]
             
-            # Generate new values for new row.
+            # Generate new values for new row...
             try:
                 pre_inv_Jf_x = np.linalg.inv(pre_Jf_x)
                 nu_x =  pre_x - pre_inv_Jf_x@(pre_f_x - self.des_y)
             except:
                 pre_inv_Jf_x = 1/pre_Jf_x
                 nu_x =  pre_x - pre_inv_Jf_x*(pre_f_x - self.des_y)
-                
             nu_f_x = self.Function(nu_x)
             nu_Jf_x = self.Jacobian_Function(nu_x)
             nu_dx = nu_x - pre_x
             nu_df_x = nu_f_x - pre_f_x
             
-            # Make new row.
+            # Make new row...
             nu_row = [nu_x, nu_f_x, nu_dx, nu_df_x, nu_Jf_x]
 
         # nu_row = np.asarray(nu_row, dtype=object)
         if self.debug:
             print(nu_row)
+        
+        # Add row to DataFrame.
         self.iter_df.loc[len_iter_df] = nu_row
         
     def Newton_Method(self,
@@ -102,8 +111,12 @@ class Roots():
         self.debug = debug
         
         if self.debug:
-            print("Newton Method starts NOW!", "Generating first row...",
+            print("Newton Method starts NOW!",
+                  "Generating first row...",
                   sep = "\n")
+        
+        # Generate the first two approximations. Need at least two to have
+        # differentials available.
         for ii in range(2):
             self.Iterate()
         
