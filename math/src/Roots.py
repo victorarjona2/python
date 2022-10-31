@@ -5,133 +5,197 @@ Created on Sat Jun  1 10:23:55 2019
 
 @author: victor
 """
-# IMPORTS ------------------------------------------------------------------- #
-import matplotlib.pyplot as plt
+# TODO: fix NM and SM to be part of class
+#import matplotlib.pyplot as plt
 import numpy as np
-# IMPORTS ------------------------------------------------------------------- #
-'''
-DESCRIPTION
+import pandas as pd
 
-    SAY YOU HAVE...
+class Roots():
+    """
+    The Roots class is a tool that provides a way to handle mathematical
+    functions (preferably continuous) to find out what input value will
+    provide the desired output.
+    
+    For the time being, everything is defined manually until a proper way of
+    initializing things is defined.
+    
+    Current procedure:
+      1) Define Function
+      2) Define Jacobian (derivative)
+       2a) TODO: check if we're using proper terminology!
+      3) Use Newton Method. Newton Method should default to Secant Method
+       if no Jacobian is defined!
+    """
 
-    g:X->Y
-    y = g(x)
+    def __init__(self):
+        """
+        """
+        dict_init = {"x": [],   # Approximations to x
+                    "f_x": [],  # Outpus of approximation to x
+                    "dx": [],   # Differential between approximations of x
+                    "df_x":[],  # Differential between approximations of f(x)
+                    "Jf_x":[]}  # Jacobian/Derivative (if available) of f(x)
+        self.iter_df = pd.DataFrame(dict_init)
+        pass
+    
+    # Define the class instance's function.
+    def Define_Function(self, f):
+        self.f = f
+    
+    # Define the class instance's Jacobian function.
+    def Define_Jacobian_Function(self, Jf):
+        self.Jf = Jf
+    
+    # Call a class instance's function to use.
+    def Function(self, x):
+        return self.f(x)
+    
+    # Call a class instance's Jacobian to use.
+    def Jacobian_Function(self, x):
+        return self.Jf(x)
+    
+    # Iteration function
+    def Iterate(self):
+        len_iter_df = len(self.iter_df.index)
+        if self.debug:
+            print(f"\nIteration number {len_iter_df}!")
+        
+        # If this is the first iteration, then populate values for first row!
+        if len_iter_df == 0:
+            nu_row = [self.x_start,                         # First guess
+                      self.Function(self.x_start),          # First output
+                      np.NAN,                               # Change fox xs
+                      np.NAN,                               # Change for ys
+                      self.Jacobian_Function(self.x_start)] # Actual Jacobian
+        
+        # If this is the first or later iteration, then...
+        elif len_iter_df >= 1:
+            # Prep variables for use...
+            pre_row = self.iter_df.iloc[-1]
+            pre_x = pre_row["x"]
+            pre_f_x = pre_row["f_x"]
+            pre_Jf_x = pre_row["Jf_x"]
+            
+            # Generate new values for new row...
+            try:
+                pre_inv_Jf_x = np.linalg.inv(pre_Jf_x)
+                nu_x =  pre_x - pre_inv_Jf_x@(pre_f_x - self.des_y)
+            except:
+                pre_inv_Jf_x = 1/pre_Jf_x
+                nu_x =  pre_x - pre_inv_Jf_x*(pre_f_x - self.des_y)
+            nu_f_x = self.Function(nu_x)
+            nu_Jf_x = self.Jacobian_Function(nu_x)
+            nu_dx = nu_x - pre_x
+            nu_df_x = nu_f_x - pre_f_x
+            
+            # Make new row...
+            nu_row = [nu_x, nu_f_x, nu_dx, nu_df_x, nu_Jf_x]
 
-    ...AND YOU WANT TO MAKE IT EQUAL TO SOME VALUE, SAY
+        # nu_row = np.asarray(nu_row, dtype=object)
+        if self.debug:
+            print(nu_row)
+        
+        # Add row to DataFrame.
+        self.iter_df.loc[len_iter_df] = nu_row
+        
+    def Newton_Method(self,
+                      x_start = 0,
+                      des_y = 0,
+                      eps = np.finfo(float).eps,
+                      debug = False):
+        '''
+        '''
+        self.x_start = x_start
+        self.des_y = des_y
+        self.eps = eps
+        self.debug = debug
+        
+        if self.debug:
+            print("Newton Method starts NOW!",
+                  "Generating first row...",
+                  sep = "\n")
+        
+        # Generate the first two approximations. Need at least two to have
+        # differentials available.
+        for ii in range(2):
+            self.Iterate()
+        
+        curr_x = self.iter_df.iloc[-1]["x"]
+        prev_x = self.iter_df.iloc[-2]["x"]
+        while np.linalg.norm(curr_x - prev_x) > self.eps:
+            self.Iterate()
+            curr_x = self.iter_df.iloc[-1]["x"]
+            prev_x = self.iter_df.iloc[-2]["x"]
+        
+        if self.debug:
+            print(self.iter_df)
+        
+def Demo_Funcs():
+    
+    def f(x):
+        return x**2 + 7*x + 12
+    
+    def Jf(x):
+        return 2*x + 7
+    
+    return [f, Jf]
 
-    y_*, THEN...
+def Demo_Funcs2():
+    def f(x):
+        x0 = x[0]
+        x1 = x[1]
+        
+        y0 = np.power(x1, x0**2 + 7*x0 + 12)
+        y1 = x0 + x1
+        
+        return np.array([y0, y1])
+    
+    def Jf(x):
+        x0 = x[0]
+        x1 = x[1]
+        
+        a = np.power(x1, x0**2 + 7*x0 + 12)
+        b = np.power(x1, x0**2 + 7*x0 + 11)
+        
+        row0_Jf_x0_x1 = [(2*x0 + 7)*a*np.log(x1), (x0**2 + 7*x0 + 12)*b]
+        row1_Jf_x0_x1 = [1, 1]
+        
+        Jf_x = np.array([row0_Jf_x0_x1, row1_Jf_x0_x1])
+        
+        return Jf_x
+    
+    return [f, Jf]
 
-    g(x) = y_* ---> g(x) - y_* = 0
-
-    NOW MAKE f(x) SUCH THAT...
-
-    f:X->Y
-    f(x) = g(x) - y_*
-
-    NOW FIND WHEN f(x) = 0
-
-    A TAYLOR SERIES EXPANSION GENERATES A LINEAR APPROXIMATION OF f(x) AT AN
-    ARBITRARY VALUE OF X SUCH THAT...
-
-    f(x) ~= f(k) + f_prime(k)*(x-k)
-            ____   __________ _____
-              |         |        +-------> APPROXIMATION CENTERED AT k
-              |         +----------------> THE DERIVATIVE OF f EVALUATED AT k
-              +--------------------------> f EVALUATED AT k
-
-    ...THEREFORE APPROACHING THE VALUE OF x THAT MAKES THE TAYLOR SERIES
-    EXPANSION EQUAL TO ZERO...
-
-    f(k) + f_prime(k)*(x-k) = 0 --> x = k - f(k)/f_prime(k)
-                                        _   ____ _________
-        k element of X <----------------+     |      |
-        f evaluated at k <--------------------+      |
-        df/dx evaluated at k <-----------------------+
-
-    ...YA-DAH, YA-DAH, WE CAN MAKE OUR APPROXIMATION DEPENDENT ON THE PREVIOUS
-    APPROXIMATION. WE GET...
-
-    x_{n} DEFINED AS THE nth APPROXIMATION...
-    x_{n + 1} = x_{n} - f(x_{n})/f_prime(x_{n})
-
-    OR...
-
-    x_{n + 1} = x_{n} - inverse(f_prime(x_{n}))@f(x_{n})
-
-DESCRIPTION
-'''
-
-# TODO:
-#   1) FINISH MAKING A SECANT METHOD THAT CAN BE USED WITH VECTORS. REFER
-#       TO THE LIMIT DEFINITION OF A DERIVATIVE.
-#   2) FILL IN THE DESCRIPTION OF eps.
-#   3) ADD COMMENTARY ON THE NEWTON METHOD'S WHILE LOOP.
-# HELPER FUNCTIONS ---------------------------------------------------------- #
-# HELPER FUNCTIONS ---------------------------------------------------------- #
-
-# TABLE OF CONTENTS --------------------------------------------------------- #
-#   1
-#       1.1
-#       1.2
-
-# TABLE OF CONTENTS --------------------------------------------------------- #
-
-# CONTENT ------------------------------------------------------------------- #
-#   1
-#       1.1
-
-
-def NewtonMethod(x_start, y, f, Jf, eps):
-    '''          _______  _  _  __  ___
-                    |     |  |   |   +------> TODO: FILL IN DESCRIPTION
-                    |     |  |   +----------> THE JACOBIAN OF f
-                    |     |  +--------------> f:X->Y
-                    |     +-----------------> THE VALUE OF Y WE WANT TO APPROX
-                    +-----------------------> OUR FIRST APPROXIMATION/GUESS
-    '''
-#   BANTER
-    print("Newton Method starts NOW!")
-#   START COLLECTING YOUR INPUT VALUES...
-    x_vals = [x_start]
-#   ... AND YOUR OUTPUT VALUES.
-    y_vals = []
-    fx = f(x_start)
-    y_vals.append(fx)
-#   BANTER
-    print(str(x_start) + "\n")
-#   USE YOUR PRE-DEFINED SQUARE JACOBIAN MATRIX TO GENERATE AN INVERSE MATRIX.
-    invJf = np.linalg.pinv(Jf(x_start))
-#   GENERATRE THE NEW VALUE.
-    '''
-     +-------------------------------> THE NEW APPROXIMATION
-     |        +----------------------> THE PREVIOUS INPUT VALUE
-     |        |        +-------------> THE INVERSE JACOBIAN SQUARE MATRIX
-     |        |        |     +-------> f EVALUATED AT THE PREVIOUS INPUT VALUE
-     |        |        |     |   +---> THE DESIRED OUTPUT
-    _|__   ___|___   __|__  _|_ _|_
-    '''
-    nu_x = x_start - invJf@(fx - y)
-#   EVALUATE f AT THE NEW INPUT VALUE...
-    fx = f(nu_x)
-#   ... STORE THE NEW INPUT VALUE...
-    x_vals.append(nu_x)
-#   ... AND DO THE SAME WITH THE NEW EVALUATION OF f.
-    y_vals.append(fx)
-#   THIS IS WHERE ALL THE MAGIC HAPPENS. TODO: ADD COMMENTS.
-    while np.linalg.norm(x_vals[-1] - x_vals[-2]) > eps:
-        pre_x = x_vals[-1]
-        fx = f(pre_x)
-        y_vals.append(fx)
-        invJf = np.linalg.pinv(Jf(pre_x))
-        x_vals.append(pre_x - invJf@(f(pre_x) - y))
-        print(str(x_vals[-1]) + "\n")
-    return [x_vals, y_vals]
-
-
-def SecantMethod(f, x_1, x_2, eps):
-    print("Secant Method starts NOW!")
-    x_vals = [x_1, x_2]
-    y_vals = [f(x_1), f(x_2)]
-#   TODO: DO THE MATH! GO THROUGH THE LIMIT DEFINITION OF THE DERIVATIVE
-#   AND APPROXIMATE THE JACOBIAN USING THE FIRST AND SECOND INPUT VALUE.
-# CONTENT ------------------------------------------------------------------- #
+if __name__ == "__main__":
+    print("Starting quadratic demo!")
+    [f, Jf] = Demo_Funcs()
+    
+    quad_rooty = Roots()
+    quad_rooty.Define_Function(f)
+    quad_rooty.Define_Jacobian_Function(Jf)
+    quad_rooty.Newton_Method(eps = 0.0000001, 
+                             x_start = -999)
+    
+    print("Starting non-linear system of equations demo 1!")
+    non_linear_sys_eq_rooty = Roots()
+    [f, Jf] = Demo_Funcs2()
+    
+    non_linear_sys_eq_rooty.Define_Function(f)
+    non_linear_sys_eq_rooty.Define_Jacobian_Function(Jf)
+    dest_y = np.array([1, 6])
+    start_x = np.array([3.8, 1.9])
+    non_linear_sys_eq_rooty.Newton_Method(x_start = start_x,
+                                          des_y = dest_y,
+                                          eps = 0.0000001)
+    
+    print("Starting non-linear system of equations demo 2!")
+    non_linear_sys_eq_rooty2 = Roots()
+    [f, Jf] = Demo_Funcs2()
+    
+    non_linear_sys_eq_rooty2.Define_Function(f)
+    non_linear_sys_eq_rooty2.Define_Jacobian_Function(Jf)
+    dest_y = np.array([1, 6])
+    start_x = np.array([-10, 5])
+    non_linear_sys_eq_rooty2.Newton_Method(x_start = start_x,
+                                           des_y = dest_y,
+                                           eps = 0.0000001)
