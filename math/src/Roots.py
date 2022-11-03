@@ -129,6 +129,9 @@ class Roots():
         
         if self.debug:
             print(self.iter_df)
+    
+    def Secant_Method(self):
+        pass
         
 def Demo_Funcs():
     
