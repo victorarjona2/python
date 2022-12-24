@@ -143,7 +143,8 @@ class Roots():
 
 
 def Demo_Funcs():
-
+    """
+    """
     def f(x):
         return x**2 + 7*x + 12
 
@@ -154,12 +155,11 @@ def Demo_Funcs():
 
 
 def Demo_Funcs2():
+    """
+    """
     def f(x):
-        x0 = x[0]
-        x1 = x[1]
-
-        y0 = np.power(x1, x0**2 + 7*x0 + 12)
-        y1 = x0 + x1
+        y0 = np.power(x[1], x[0]**2 + 7*x[0] + 12)
+        y1 = x[0] + x[1]
 
         return np.array([y0, y1])
 
@@ -180,13 +180,22 @@ def Demo_Funcs2():
 
 
 if __name__ == "__main__":
+    """
+    This is a quick demo for a regular quadratic function and a non-linear
+    system of equations, both of which we know the answers to.
+    """
+    
+    # Defining repeating variables
+    universal_eps = 0.0000001
+    non_linear_dest_y = np.array([1, 6])
+    
     print("Starting quadratic demo!")
     [f, Jf] = Demo_Funcs()
 
     quad_rooty = Roots()
     quad_rooty.Define_Function(f)
     quad_rooty.Define_Jacobian_Function(Jf)
-    quad_rooty.Newton_Method(eps=0.0000001,
+    quad_rooty.Newton_Method(eps=universal_eps,
                              x_start=-999)
 
     print("Starting non-linear system of equations demo 1!")
@@ -195,20 +204,17 @@ if __name__ == "__main__":
 
     non_linear_sys_eq_rooty.Define_Function(f)
     non_linear_sys_eq_rooty.Define_Jacobian_Function(Jf)
-    dest_y = np.array([1, 6])
     start_x = np.array([3.8, 1.9])
     non_linear_sys_eq_rooty.Newton_Method(x_start=start_x,
-                                          des_y=dest_y,
-                                          eps=0.0000001)
+                                          des_y=non_linear_dest_y,
+                                          eps=universal_eps)
 
     print("Starting non-linear system of equations demo 2!")
     non_linear_sys_eq_rooty2 = Roots()
-    [f, Jf] = Demo_Funcs2()
 
     non_linear_sys_eq_rooty2.Define_Function(f)
     non_linear_sys_eq_rooty2.Define_Jacobian_Function(Jf)
-    dest_y = np.array([1, 6])
     start_x = np.array([-10, 5])
     non_linear_sys_eq_rooty2.Newton_Method(x_start=start_x,
-                                           des_y=dest_y,
-                                           eps=0.0000001)
+                                           des_y=non_linear_dest_y,
+                                           eps=universal_eps)
