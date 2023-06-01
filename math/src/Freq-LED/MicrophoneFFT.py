@@ -10,7 +10,7 @@ try:
     import sys
     import seaborn as sns
 except:
-    print "Something didn't import"
+    print("Something didn't import")
 
 i=0
 f,ax = plt.subplots(2)
@@ -22,12 +22,13 @@ y = np.random.randn(10000)
 # Plot 0 is for raw audio data
 li, = ax[0].plot(x, y)
 ax[0].set_xlim(0,1000)
-ax[0].set_ylim(-5000,5000)
+ax[0].set_ylim(-20000,20000)
 ax[0].set_title("Raw Audio Signal")
+
 # Plot 1 is for the FFT of the audio
 li2, = ax[1].plot(x, y)
 ax[1].set_xlim(0,5000)
-ax[1].set_ylim(-100,100)
+ax[1].set_ylim(-10,150)
 ax[1].set_title("Fast Fourier Transform")
 # Show the plot, but without blocking updates
 plt.pause(0.01)
@@ -55,6 +56,7 @@ keep_going = True
 def plot_data(in_data):
     # get and convert the data to float
     audio_data = np.fromstring(in_data, np.int16)
+
     # Fast Fourier Transform, 10*log10(abs) is to scale it to dB
     # and make sure it's not imaginary
     dfft = 10.*np.log10(abs(np.fft.rfft(audio_data)))
@@ -78,9 +80,9 @@ def plot_data(in_data):
 
 # Open the connection and start streaming the data
 stream.start_stream()
-print "\n+---------------------------------+"
-print "| Press Ctrl+C to Break Recording |"
-print "+---------------------------------+\n"
+print("\n+---------------------------------+")
+print( "| Press Ctrl+C to Break Recording |")
+print( "+---------------------------------+\n")
 
 # Loop so program doesn't end while the stream callback's
 # itself for new data
