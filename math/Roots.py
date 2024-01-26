@@ -33,11 +33,12 @@ class Roots():
         the change in x, the change y f_x, and the actual Jacobian, assuming
         it has been defined, are stored. 
         """
-        dict_init = {"x": [],   # Approximations to x
-                     "f_x": [],  # Outpus of approximation to x
-                     "dx": [],   # Differential between approximations of x
-                     "df_x": [],  # Differential between approximations of f(x)
-                     "Jf_x": []}  # Jacobian/Derivative (if available) of f(x)
+        dict_init = {"x": [],       # Approximations to x
+                     "f_x": [],     # Outpus of approximation to x
+                     "dx": [],      # Differential between approximations of x
+                     "df_x": [],    # Differential between approximations of f(x)
+                     "Jf_x": []}    # Jacobian/Derivative (if available) of f(x)
+        
         self.iter_df = pd.DataFrame({"x": [],
                                      "f_x": [],
                                      "dx": [],
